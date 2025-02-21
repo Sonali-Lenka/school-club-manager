@@ -13,6 +13,13 @@
                     <strong>Email:</strong> {{ current_user.email }}<br>
                     <strong>Member since:</strong> {{ current_user.created_at.strftime('%B %d, %Y') }}
                 </p>
+                <!-- Add Delete Account Button -->
+                <form action="{{ url_for('delete_account') }}" method="POST"
+                      onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+                    <button type="submit" class="btn btn-danger mt-3">
+                        <i class="bi bi-trash"></i> Delete Account
+                    </button>
+                </form>
             </div>
         </div>
     </div>

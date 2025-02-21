@@ -185,3 +185,71 @@ def remove_club_member(club_id, user_id):
         flash(f'Error removing member: {str(e)}', 'danger')
 
     return redirect(url_for('admin_panel'))
+
+@app.route('/admin/users/<int:user_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def admin_delete_user(user_id):
+    try:
+        user = User.query.get_or_404(user_id)
+
+        # Prevent deleting the last admin
+        if user.role == 'admin':
+            admin_count = User.query.filter_by(role='admin').count()
+            if admin_count <= 1:
+                flash('Cannot delete the last admin user.', 'danger')
+                return redirect(url_for('admin_panel'))
+
+        # Remove user from all clubs
+        for club in user.clubs_joined:
+            club.members.remove(user)
+
+        # Delete clubs created by the user
+        Club.query.filter_by(creator_id=user.id).delete()
+
+        # Delete the user
+        db.session.delete(user)
+        db.session.commit()
+        flash(f'User {user.username} has been deleted.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting user: {str(e)}', 'danger')
+
+    return redirect(url_for('admin_panel'))
+
+@app.route('/account/delete', methods=['POST'])
+@login_required
+def delete_account():
+    try:
+        user = current_user
+
+        # Prevent deleting the last admin
+        if user.role == 'admin':
+            admin_count = User.query.filter_by(role='admin').count()
+            if admin_count <= 1:
+                flash('Cannot delete the last admin account.', 'danger')
+                return redirect(url_for('dashboard'))
+
+        # Remove user from all clubs
+        for club in user.clubs_joined:
+            club.members.remove(user)
+
+        # Delete clubs created by the user or reassign to admin if needed
+        for club in user.clubs_created:
+            if club.members.count() > 0:
+                # Reassign club to the first admin
+                admin = User.query.filter_by(role='admin').first()
+                club.creator_id = admin.id
+            else:
+                db.session.delete(club)
+
+        # Logout and delete the user
+        logout_user()
+        db.session.delete(user)
+        db.session.commit()
+        flash('Your account has been deleted successfully.', 'info')
+        return redirect(url_for('index'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting account: {str(e)}', 'danger')
+        return redirect(url_for('dashboard'))
