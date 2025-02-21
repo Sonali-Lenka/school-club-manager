@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Clubs{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>All Clubs</h2>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="col text-end">
+        <a href="{{ url_for('create_club') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Club
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for club in clubs %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ club.name }}</h5>
+                <p class="card-text">{{ club.description }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        Created by {{ club.creator.username }}
+                    </small>
+                    <a href="{{ url_for('club_details', club_id=club.id) }}" 
+                       class="btn btn-outline-primary btn-sm">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">
+                    Members: {{ club.members.count() }}
+                </small>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            No clubs available at the moment.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

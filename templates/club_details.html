@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ club.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">{{ club.name }}</h2>
+        <p class="text-muted">
+            Created by {{ club.creator.username }} on {{ club.created_at.strftime('%B %d, %Y') }}
+        </p>
+        <p class="card-text">{{ club.description }}</p>
+        
+        {% if current_user.is_authenticated %}
+            {% if club not in current_user.clubs_joined %}
+            <a href="{{ url_for('join_club', club_id=club.id) }}" 
+               class="btn btn-primary">
+                Join Club
+            </a>
+            {% else %}
+            <button class="btn btn-success" disabled>
+                Already a Member
+            </button>
+            {% endif %}
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-primary">
+            Login to Join
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Members ({{ club.members.count() }})</h5>
+        <div class="list-group">
+            {% for member in club.members %}
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>{{ member.username }}</span>
+                    <small class="text-muted">
+                        Joined {{ member.created_at.strftime('%B %d, %Y') }}
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

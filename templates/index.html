@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row align-items-center py-5">
+    <div class="col-md-6">
+        <h1 class="display-4">Welcome to Student Clubs</h1>
+        <p class="lead">Join exciting clubs, meet new people, and explore your interests!</p>
+        {% if not current_user.is_authenticated %}
+        <div class="mt-4">
+            <a href="{{ url_for('signup') }}" class="btn btn-primary me-2">Sign Up</a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-secondary">Login</a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Featured Clubs</h5>
+                <div class="list-group">
+                    {% for club in clubs[:3] %}
+                    <a href="{{ url_for('club_details', club_id=club.id) }}" 
+                       class="list-group-item list-group-item-action">
+                        <h6 class="mb-1">{{ club.name }}</h6>
+                        <p class="mb-1 text-muted">{{ club.description[:100] }}...</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                <a href="{{ url_for('clubs') }}" class="btn btn-outline-primary mt-3">View All Clubs</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

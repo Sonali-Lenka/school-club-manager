@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Profile</h5>
+                <p class="card-text">
+                    <strong>Username:</strong> {{ current_user.username }}<br>
+                    <strong>Email:</strong> {{ current_user.email }}<br>
+                    <strong>Member since:</strong> {{ current_user.created_at.strftime('%B %d, %Y') }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">My Clubs</h5>
+                {% if current_user.clubs_joined %}
+                <div class="list-group">
+                    {% for club in current_user.clubs_joined %}
+                    <a href="{{ url_for('club_details', club_id=club.id) }}" 
+                       class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ club.name }}</h6>
+                            <small>Joined</small>
+                        </div>
+                        <p class="mb-1">{{ club.description[:100] }}...</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">You haven't joined any clubs yet.</p>
+                <a href="{{ url_for('clubs') }}" class="btn btn-primary">Browse Clubs</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Clubs Created by Me</h5>
+                {% if current_user.clubs_created %}
+                <div class="list-group">
+                    {% for club in current_user.clubs_created %}
+                    <a href="{{ url_for('club_details', club_id=club.id) }}" 
+                       class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ club.name }}</h6>
+                            <small>Created {{ club.created_at.strftime('%B %d, %Y') }}</small>
+                        </div>
+                        <p class="mb-1">{{ club.description[:100] }}...</p>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">You haven't created any clubs yet.</p>
+                <a href="{{ url_for('create_club') }}" class="btn btn-primary">Create a Club</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

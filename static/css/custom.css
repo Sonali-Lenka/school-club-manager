@@ -1,0 +1,44 @@
+/* Custom styles to complement Bootstrap dark theme */
+
+/* Body padding for fixed navbar */
+body {
+    padding-top: 20px;
+}
+
+/* Card hover effect */
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Custom button styles */
+.btn-primary {
+    border-radius: 6px;
+}
+
+/* Footer styling */
+.footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    margin-top: 50px;
+}
+
+/* Form styling */
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Alert styling */
+.alert {
+    border-radius: 8px;
+}
+
+/* List group item hover effect */
+.list-group-item-action:hover {
+    transform: translateX(5px);
+    transition: transform 0.2s;
+}
