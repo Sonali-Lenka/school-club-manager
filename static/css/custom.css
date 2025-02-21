@@ -8,15 +8,19 @@ body {
 /* Card hover effect */
 .card {
     transition: transform 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(33, 37, 41, 0.95);
 }
 
 .card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* Custom button styles */
 .btn-primary {
     border-radius: 6px;
+    padding: 0.5rem 1.5rem;
 }
 
 /* Footer styling */
@@ -25,20 +29,51 @@ body {
     bottom: 0;
     width: 100%;
     margin-top: 50px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Form styling */
+.form-control {
+    background-color: rgba(33, 37, 41, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .form-control:focus {
+    background-color: rgba(33, 37, 41, 0.98);
     box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
 }
 
 /* Alert styling */
 .alert {
     border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* List group item hover effect */
+.list-group-item {
+    background-color: rgba(33, 37, 41, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .list-group-item-action:hover {
     transform: translateX(5px);
     transition: transform 0.2s;
+    background-color: rgba(33, 37, 41, 0.98);
+}
+
+/* Navbar customization */
+.navbar {
+    backdrop-filter: blur(10px);
+    background-color: rgba(33, 37, 41, 0.95) !important;
+}
+
+/* Icon styling */
+.bi {
+    margin-right: 0.5rem;
+}
+
+/* Card title emphasis */
+.card-title {
+    color: var(--bs-primary);
+    font-weight: 600;
 }

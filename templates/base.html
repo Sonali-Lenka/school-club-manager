@@ -20,31 +20,45 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('clubs') }}">Clubs</a>
+                        <a class="nav-link" href="{{ url_for('clubs') }}">
+                            <i class="bi bi-list-ul"></i> Clubs
+                        </a>
                     </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('create_club') }}">Create Club</a>
+                        <a class="nav-link" href="{{ url_for('create_club') }}">
+                            <i class="bi bi-plus-circle"></i> Create Club
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
                     </li>
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <span class="nav-link">Welcome, {{ current_user.username }}!</span>
+                        <span class="nav-link">
+                            <i class="bi bi-person-circle"></i> {{ current_user.username }}
+                        </span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        <a class="nav-link" href="{{ url_for('login') }}">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
+                        <a class="nav-link" href="{{ url_for('signup') }}">
+                            <i class="bi bi-person-plus"></i> Sign Up
+                        </a>
                     </li>
                     {% endif %}
                 </ul>
