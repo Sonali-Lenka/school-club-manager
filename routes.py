@@ -66,7 +66,12 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    try:
+        return render_template('dashboard.html')
+    except Exception as e:
+        app.logger.error(f"Error accessing dashboard: {str(e)}")
+        flash('Error accessing dashboard', 'danger')
+        return redirect(url_for('index'))
 
 @app.route('/admin')
 @login_required
@@ -239,17 +244,24 @@ def delete_account():
             if club.members.count() > 0:
                 # Reassign club to the first admin
                 admin = User.query.filter_by(role='admin').first()
-                club.creator_id = admin.id
+                if admin:
+                    club.creator_id = admin.id
+                    app.logger.info(f"Reassigned club {club.name} to admin {admin.username}")
             else:
                 db.session.delete(club)
+
+        # Log the deletion
+        app.logger.info(f"Deleting user account: {user.username}")
 
         # Logout and delete the user
         logout_user()
         db.session.delete(user)
         db.session.commit()
+
         flash('Your account has been deleted successfully.', 'info')
         return redirect(url_for('index'))
     except Exception as e:
         db.session.rollback()
+        app.logger.error(f"Error deleting account: {str(e)}")
         flash(f'Error deleting account: {str(e)}', 'danger')
         return redirect(url_for('dashboard'))

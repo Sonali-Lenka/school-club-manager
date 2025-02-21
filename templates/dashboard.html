@@ -13,7 +13,7 @@
                     <strong>Email:</strong> {{ current_user.email }}<br>
                     <strong>Member since:</strong> {{ current_user.created_at.strftime('%B %d, %Y') }}
                 </p>
-                <!-- Add Delete Account Button -->
+                <!-- Delete Account Form -->
                 <form action="{{ url_for('delete_account') }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
                     <button type="submit" class="btn btn-danger mt-3">
@@ -24,10 +24,10 @@
         </div>
     </div>
     <div class="col-md-8">
+        {% if current_user.clubs_joined %}
         <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">My Clubs</h5>
-                {% if current_user.clubs_joined %}
                 <div class="list-group">
                     {% for club in current_user.clubs_joined %}
                     <a href="{{ url_for('club_details', club_id=club.id) }}" 
@@ -40,17 +40,14 @@
                     </a>
                     {% endfor %}
                 </div>
-                {% else %}
-                <p class="text-muted">You haven't joined any clubs yet.</p>
-                <a href="{{ url_for('clubs') }}" class="btn btn-primary">Browse Clubs</a>
-                {% endif %}
             </div>
         </div>
+        {% endif %}
 
+        {% if current_user.clubs_created %}
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Clubs Created by Me</h5>
-                {% if current_user.clubs_created %}
                 <div class="list-group">
                     {% for club in current_user.clubs_created %}
                     <a href="{{ url_for('club_details', club_id=club.id) }}" 
@@ -63,12 +60,9 @@
                     </a>
                     {% endfor %}
                 </div>
-                {% else %}
-                <p class="text-muted">You haven't created any clubs yet.</p>
-                <a href="{{ url_for('create_club') }}" class="btn btn-primary">Create a Club</a>
-                {% endif %}
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
