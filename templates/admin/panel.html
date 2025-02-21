@@ -10,9 +10,10 @@
 </div>
 
 <div class="row">
+    <!-- User Management Section -->
     <div class="col-md-6">
         <div class="card mb-4">
-            <div class="card-header">
+            <div class="card-header bg-dark">
                 <h5 class="card-title mb-0">User Management</h5>
             </div>
             <div class="card-body">
@@ -22,7 +23,7 @@
                             <tr>
                                 <th>Username</th>
                                 <th>Email</th>
-                                <th>Role</th>
+                                <th>Current Role</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -38,12 +39,14 @@
                                 </td>
                                 <td>
                                     <form action="{{ url_for('update_user_role', user_id=user.id) }}" method="POST" class="d-inline">
-                                        <select name="role" class="form-select form-select-sm d-inline-block w-auto me-2">
-                                            <option value="student" {{ 'selected' if user.role == 'student' }}>Student</option>
-                                            <option value="moderator" {{ 'selected' if user.role == 'moderator' }}>Moderator</option>
-                                            <option value="admin" {{ 'selected' if user.role == 'admin' }}>Admin</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                        <div class="input-group input-group-sm">
+                                            <select name="role" class="form-select">
+                                                <option value="student" {{ 'selected' if user.role == 'student' }}>Student</option>
+                                                <option value="moderator" {{ 'selected' if user.role == 'moderator' }}>Moderator</option>
+                                                <option value="admin" {{ 'selected' if user.role == 'admin' }}>Admin</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
                                     </form>
                                 </td>
                             </tr>
@@ -55,9 +58,10 @@
         </div>
     </div>
 
+    <!-- Club Management Section -->
     <div class="col-md-6">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header bg-dark">
                 <h5 class="card-title mb-0">Club Management</h5>
             </div>
             <div class="card-body">
@@ -74,8 +78,16 @@
                         <tbody>
                             {% for club in clubs %}
                             <tr>
-                                <td>{{ club.name }}</td>
-                                <td>{{ club.creator.username }}</td>
+                                <td>
+                                    <a href="{{ url_for('club_details', club_id=club.id) }}" class="text-decoration-none">
+                                        {{ club.name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        {{ club.creator.username }}
+                                    </span>
+                                </td>
                                 <td>
                                     <span class="badge bg-{{ 'success' if club.status == 'active' else 'warning' if club.status == 'pending' else 'danger' }}">
                                         {{ club.status }}
@@ -83,18 +95,60 @@
                                 </td>
                                 <td>
                                     <form action="{{ url_for('update_club_status', club_id=club.id) }}" method="POST" class="d-inline">
-                                        <select name="status" class="form-select form-select-sm d-inline-block w-auto me-2">
-                                            <option value="active" {{ 'selected' if club.status == 'active' }}>Active</option>
-                                            <option value="pending" {{ 'selected' if club.status == 'pending' }}>Pending</option>
-                                            <option value="inactive" {{ 'selected' if club.status == 'inactive' }}>Inactive</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                        <div class="input-group input-group-sm">
+                                            <select name="status" class="form-select">
+                                                <option value="active" {{ 'selected' if club.status == 'active' }}>Active</option>
+                                                <option value="pending" {{ 'selected' if club.status == 'pending' }}>Pending</option>
+                                                <option value="inactive" {{ 'selected' if club.status == 'inactive' }}>Inactive</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
                                     </form>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Role Permissions Info -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="card-title mb-0">Role Permissions Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6 class="text-primary">Student</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Join clubs</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> View club details</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Create clubs (requires approval)</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-info">Moderator</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle-fill text-success"></i> All student permissions</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Create clubs without approval</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Manage own clubs</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-primary">Admin</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle-fill text-success"></i> All moderator permissions</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Manage all clubs</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Manage user roles</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Access admin panel</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

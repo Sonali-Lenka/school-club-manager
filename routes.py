@@ -13,9 +13,17 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def moderator_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or (current_user.role not in ['moderator', 'admin']):
+            abort(403)
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/')
 def index():
-    clubs = Club.query.all()
+    clubs = Club.query.filter_by(status='active').all()
     return render_template('index.html', clubs=clubs)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -74,6 +82,14 @@ def admin_panel():
 def update_user_role(user_id):
     user = User.query.get_or_404(user_id)
     new_role = request.form.get('role')
+
+    # Prevent self-demotion for the last admin
+    if user.id == current_user.id and new_role != 'admin':
+        admin_count = User.query.filter_by(role='admin').count()
+        if admin_count <= 1:
+            flash('Cannot remove the last admin user.', 'danger')
+            return redirect(url_for('admin_panel'))
+
     if new_role in ['student', 'moderator', 'admin']:
         user.role = new_role
         user.is_admin = (new_role == 'admin')
@@ -91,6 +107,14 @@ def update_club_status(club_id):
         club.status = new_status
         db.session.commit()
         flash(f'Updated status for {club.name} to {new_status}', 'success')
+
+        # Notify club creator of status change
+        status_messages = {
+            'active': 'approved and is now active',
+            'inactive': 'deactivated',
+            'pending': 'set to pending review'
+        }
+        flash(f'Your club "{club.name}" has been {status_messages[new_status]}.', 'info')
     return redirect(url_for('admin_panel'))
 
 @app.route('/clubs')
@@ -108,15 +132,22 @@ def club_details(club_id):
 def create_club():
     form = ClubForm()
     if form.validate_on_submit():
+        # Determine initial status based on user role
+        initial_status = 'active' if current_user.role in ['admin', 'moderator'] else 'pending'
+
         club = Club(
             name=form.name.data,
             description=form.description.data,
             creator_id=current_user.id,
-            status='pending' if current_user.role == 'student' else 'active'
+            status=initial_status
         )
         db.session.add(club)
         db.session.commit()
-        flash('Club created successfully! Waiting for admin approval.' if club.status == 'pending' else 'Club created successfully!', 'success')
+
+        if initial_status == 'pending':
+            flash('Club created successfully! Waiting for admin approval.', 'success')
+        else:
+            flash('Club created successfully!', 'success')
         return redirect(url_for('clubs'))
     return render_template('create_club.html', form=form)
 
