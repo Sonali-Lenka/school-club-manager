@@ -163,3 +163,17 @@ def join_club(club_id):
         db.session.commit()
         flash(f'You have joined {club.name}!', 'success')
     return redirect(url_for('club_details', club_id=club_id))
+
+@app.route('/admin/clubs/<int:club_id>/members/<int:user_id>/remove', methods=['POST'])
+@login_required
+@admin_required
+def remove_club_member(club_id, user_id):
+    club = Club.query.get_or_404(club_id)
+    user = User.query.get_or_404(user_id)
+
+    if user in club.members:
+        club.members.remove(user)
+        db.session.commit()
+        flash(f'Removed {user.username} from {club.name}', 'success')
+
+    return redirect(url_for('admin_panel'))

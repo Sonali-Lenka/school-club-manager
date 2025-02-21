@@ -56,6 +56,54 @@
                 </div>
             </div>
         </div>
+
+        <!-- Club Members Section -->
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="card-title mb-0">Club Memberships</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Club</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for club in clubs %}
+                                {% for member in club.members %}
+                                <tr>
+                                    <td>
+                                        <div>{{ member.username }}</div>
+                                        <small class="text-muted">{{ member.email }}</small>
+                                    </td>
+                                    <td>{{ club.name }}</td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            Member
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form action="{{ url_for('remove_club_member', club_id=club.id, user_id=member.id) }}" 
+                                              method="POST" class="d-inline"
+                                              onsubmit="return confirm('Are you sure you want to remove this member from the club?');">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-person-x"></i> Remove
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Club Management Section -->
@@ -147,6 +195,7 @@
                             <li><i class="bi bi-check-circle-fill text-success"></i> Manage all clubs</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i> Manage user roles</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i> Access admin panel</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Remove members from clubs</li>
                         </ul>
                     </div>
                 </div>
