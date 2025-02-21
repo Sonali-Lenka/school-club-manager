@@ -168,12 +168,20 @@ def join_club(club_id):
 @login_required
 @admin_required
 def remove_club_member(club_id, user_id):
-    club = Club.query.get_or_404(club_id)
-    user = User.query.get_or_404(user_id)
+    try:
+        club = Club.query.get_or_404(club_id)
+        user = User.query.get_or_404(user_id)
 
-    if user in club.members:
-        club.members.remove(user)
-        db.session.commit()
-        flash(f'Removed {user.username} from {club.name}', 'success')
+        if user in club.members:
+            # Remove the user from the club's members
+            club.members.remove(user)
+            db.session.commit()
+            flash(f'Successfully removed {user.username} from {club.name}', 'success')
+        else:
+            flash(f'User {user.username} is not a member of {club.name}', 'warning')
+
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error removing member: {str(e)}', 'danger')
 
     return redirect(url_for('admin_panel'))
